@@ -2,7 +2,7 @@
 
 name = "profitable-logistics-app"
 client_id = "298a00121eb955181e33b5113ad89d4c"
-application_url = "https://classes-arctic-controls-sizes.trycloudflare.com"
+application_url = "https://volume-savannah-specialty-mounted.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://classes-arctic-controls-sizes.trycloudflare.com/auth/callback",
-  "https://classes-arctic-controls-sizes.trycloudflare.com/auth/shopify/callback",
-  "https://classes-arctic-controls-sizes.trycloudflare.com/api/auth/callback"
+  "https://volume-savannah-specialty-mounted.trycloudflare.com/auth/callback",
+  "https://volume-savannah-specialty-mounted.trycloudflare.com/auth/shopify/callback",
+  "https://volume-savannah-specialty-mounted.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
