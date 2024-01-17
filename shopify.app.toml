@@ -1,0 +1,27 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "profitable-logistics-app"
+client_id = "298a00121eb955181e33b5113ad89d4c"
+application_url = "https://classes-arctic-controls-sizes.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://classes-arctic-controls-sizes.trycloudflare.com/auth/callback",
+  "https://classes-arctic-controls-sizes.trycloudflare.com/auth/shopify/callback",
+  "https://classes-arctic-controls-sizes.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-ae7ede7f.myshopify.com"
