@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { json, redirect } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  json,
+  redirect,
+} from "@remix-run/node";
 import {
   useActionData,
   useLoaderData,
@@ -7,7 +12,6 @@ import {
   useSubmit,
   useNavigate,
 } from "@remix-run/react";
-import { authenticate } from "../shopify.server";
 import {
   Card,
   Bleed,
@@ -27,10 +31,12 @@ import {
 } from "@shopify/polaris";
 import { ImageIcon } from "@shopify/polaris-icons";
 
-import db from "../db.server";
-import { getQRCode, validateQRCode } from "../models/QRCode.server";
+import db from "~/db.server";
+import { authenticate } from "~/shopify.server";
+import { getQRCode, validateQRCode } from "~/models/qrcode.server";
+import { GeneratedQRCode, QRCodeFormState } from "~/types/qr";
 
-export async function loader({ request, params }) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const { admin } = await authenticate.admin(request);
 
   if (params.id === "new") {
@@ -40,15 +46,14 @@ export async function loader({ request, params }) {
     });
   }
 
-  return json(await getQRCode(Number(params.id), admin.graphql));
+  return json(await getQRCode(Number(params.id), admin));
 }
 
-export async function action({ request, params }) {
+export async function action({ request, params }: ActionFunctionArgs) {
   const { session } = await authenticate.admin(request);
   const { shop } = session;
 
-  /** @type {any} */
-  const data = {
+  const data: any = {
     ...Object.fromEntries(await request.formData()),
     shop,
   };
@@ -73,11 +78,12 @@ export async function action({ request, params }) {
 }
 
 export default function QRCodeForm() {
-  const errors = useActionData()?.errors || {};
+  const errors =
+    useActionData<{ errors: any | { status: number } }>()?.errors || {};
 
-  const qrCode = useLoaderData();
-  const [formState, setFormState] = useState(qrCode);
-  const [cleanFormState, setCleanFormState] = useState(qrCode);
+  const qrCode = useLoaderData<GeneratedQRCode>();
+  const [formState, setFormState] = useState<QRCodeFormState>(qrCode);
+  const [cleanFormState, setCleanFormState] = useState<QRCodeFormState>(qrCode);
   const isDirty = JSON.stringify(formState) !== JSON.stringify(cleanFormState);
 
   const nav = useNavigation();
@@ -111,7 +117,7 @@ export default function QRCodeForm() {
 
   const submit = useSubmit();
   function handleSave() {
-    const data = {
+    const data: Partial<QRCodeFormState> = {
       title: formState.title,
       productId: formState.productId || "",
       productVariantId: formState.productVariantId || "",
@@ -166,7 +172,7 @@ export default function QRCodeForm() {
                   <InlineStack blockAlign="center" gap="500">
                     <Thumbnail
                       source={formState.productImage || ImageIcon}
-                      alt={formState.productAlt}
+                      alt={formState.productAlt || ""}
                     />
                     <Text as="span" variant="headingMd" fontWeight="semibold">
                       {formState.productTitle}
@@ -198,7 +204,7 @@ export default function QRCodeForm() {
                         value: "cart",
                       },
                     ]}
-                    selected={[formState.destination]}
+                    selected={[formState.destination!]}
                     onChange={(destination) =>
                       setFormState({
                         ...formState,

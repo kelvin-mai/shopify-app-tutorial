@@ -1,18 +1,21 @@
+import { QRCode } from "@prisma/client";
+import { AdminApiContext } from "node_modules/@shopify/shopify-app-remix/build/ts/server/clients";
 import qrcode from "qrcode";
 import invariant from "tiny-invariant";
-import db from "../db.server";
 
-export async function getQRCode(id, graphql) {
+import db from "~/db.server";
+
+export async function getQRCode(id: number, admin: AdminApiContext) {
   const qrCode = await db.qRCode.findFirst({ where: { id } });
 
   if (!qrCode) {
     return null;
   }
 
-  return supplementQRCode(qrCode, graphql);
+  return supplementQRCode(qrCode, admin);
 }
 
-export async function getQRCodes(shop, graphql) {
+export async function getQRCodes(shop: string, admin: AdminApiContext) {
   const qrCodes = await db.qRCode.findMany({
     where: { shop },
     orderBy: { id: "desc" },
@@ -20,17 +23,15 @@ export async function getQRCodes(shop, graphql) {
 
   if (qrCodes.length === 0) return [];
 
-  return Promise.all(
-    qrCodes.map((qrCode) => supplementQRCode(qrCode, graphql))
-  );
+  return Promise.all(qrCodes.map((qrCode) => supplementQRCode(qrCode, admin)));
 }
 
-export function getQRCodeImage(id) {
+export function getQRCodeImage(id: number) {
   const url = new URL(`/qrcodes/${id}/scan`, process.env.SHOPIFY_APP_URL);
   return qrcode.toDataURL(url.href);
 }
 
-export function getDestinationUrl(qrCode) {
+export function getDestinationUrl(qrCode: QRCode) {
   if (qrCode.destination === "product") {
     return `https://${qrCode.shop}/products/${qrCode.productHandle}`;
   }
@@ -43,10 +44,10 @@ export function getDestinationUrl(qrCode) {
   return `https://${qrCode.shop}/cart/${match[1]}:1`;
 }
 
-async function supplementQRCode(qrCode, graphql) {
+async function supplementQRCode(qrCode: QRCode, admin: AdminApiContext) {
   const qrCodeImagePromise = getQRCodeImage(qrCode.id);
 
-  const response = await graphql(
+  const response = await admin.graphql(
     `
       query supplementQRCode($id: ID!) {
         product(id: $id) {
@@ -82,8 +83,8 @@ async function supplementQRCode(qrCode, graphql) {
   };
 }
 
-export function validateQRCode(data) {
-  const errors = {};
+export function validateQRCode(data: Partial<QRCode>) {
+  const errors: any = {};
 
   if (!data.title) {
     errors.title = "Title is required";
