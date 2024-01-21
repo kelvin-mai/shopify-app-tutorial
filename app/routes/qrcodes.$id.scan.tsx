@@ -1,16 +1,16 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import invariant from "tiny-invariant";
+import { LoaderFunctionArgs, redirect } from '@remix-run/node';
+import invariant from 'tiny-invariant';
 
-import db from "~/db.server";
-import { getDestinationUrl } from "~/models/qrcode.server";
+import db from '~/db.server';
+import { getDestinationUrl } from '~/models/qrcode.server';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  invariant(params.id, "Could not find QR code destination");
+  invariant(params.id, 'Could not find QR code destination');
 
   const id = Number(params.id);
   const qrCode = await db.qRCode.findFirst({ where: { id } });
 
-  invariant(qrCode, "Could not find QR code destination");
+  invariant(qrCode, 'Could not find QR code destination');
 
   await db.qRCode.update({
     where: { id },

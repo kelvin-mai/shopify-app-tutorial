@@ -1,6 +1,6 @@
-import { QRCode } from "@prisma/client";
+import { QRCode } from '@prisma/client';
 
-export type GeneratedQRCode = Omit<QRCode, "createdAt"> & {
+export type GeneratedQRCode = Omit<QRCode, 'createdAt'> & {
   createdAt: string;
   productDeleted: boolean;
   productTitle: string;

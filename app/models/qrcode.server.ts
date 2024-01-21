@@ -1,9 +1,9 @@
-import { QRCode } from "@prisma/client";
-import { AdminApiContext } from "node_modules/@shopify/shopify-app-remix/build/ts/server/clients";
-import qrcode from "qrcode";
-import invariant from "tiny-invariant";
+import { QRCode } from '@prisma/client';
+import { AdminApiContext } from 'node_modules/@shopify/shopify-app-remix/build/ts/server/clients';
+import qrcode from 'qrcode';
+import invariant from 'tiny-invariant';
 
-import db from "~/db.server";
+import db from '~/db.server';
 
 export async function getQRCode(id: number, admin: AdminApiContext) {
   const qrCode = await db.qRCode.findFirst({ where: { id } });
@@ -18,7 +18,7 @@ export async function getQRCode(id: number, admin: AdminApiContext) {
 export async function getQRCodes(shop: string, admin: AdminApiContext) {
   const qrCodes = await db.qRCode.findMany({
     where: { shop },
-    orderBy: { id: "desc" },
+    orderBy: { id: 'desc' },
   });
 
   if (qrCodes.length === 0) return [];
@@ -32,14 +32,14 @@ export function getQRCodeImage(id: number) {
 }
 
 export function getDestinationUrl(qrCode: QRCode) {
-  if (qrCode.destination === "product") {
+  if (qrCode.destination === 'product') {
     return `https://${qrCode.shop}/products/${qrCode.productHandle}`;
   }
 
   const match = /gid:\/\/shopify\/ProductVariant\/([0-9]+)/.exec(
-    qrCode.productVariantId
+    qrCode.productVariantId,
   );
-  invariant(match, "Unrecognized product variant ID");
+  invariant(match, 'Unrecognized product variant ID');
 
   return `https://${qrCode.shop}/cart/${match[1]}:1`;
 }
@@ -65,7 +65,7 @@ async function supplementQRCode(qrCode: QRCode, admin: AdminApiContext) {
       variables: {
         id: qrCode.productId,
       },
-    }
+    },
   );
 
   const {
@@ -87,15 +87,15 @@ export function validateQRCode(data: Partial<QRCode>) {
   const errors: any = {};
 
   if (!data.title) {
-    errors.title = "Title is required";
+    errors.title = 'Title is required';
   }
 
   if (!data.productId) {
-    errors.productId = "Product is required";
+    errors.productId = 'Product is required';
   }
 
   if (!data.destination) {
-    errors.destination = "Destination is required";
+    errors.destination = 'Destination is required';
   }
 
   if (Object.keys(errors).length) {
