@@ -2,7 +2,7 @@
 
 name = "profitable-logistics-app"
 client_id = "298a00121eb955181e33b5113ad89d4c"
-application_url = "https://volume-savannah-specialty-mounted.trycloudflare.com"
+application_url = "https://household-fighters-cursor-signing.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://volume-savannah-specialty-mounted.trycloudflare.com/auth/callback",
-  "https://volume-savannah-specialty-mounted.trycloudflare.com/auth/shopify/callback",
-  "https://volume-savannah-specialty-mounted.trycloudflare.com/api/auth/callback"
+  "https://household-fighters-cursor-signing.trycloudflare.com/auth/callback",
+  "https://household-fighters-cursor-signing.trycloudflare.com/auth/shopify/callback",
+  "https://household-fighters-cursor-signing.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
